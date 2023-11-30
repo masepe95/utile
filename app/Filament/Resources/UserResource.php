@@ -20,6 +20,7 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\RelationManagers\RelationGroup;
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Filament\Tables\Actions\Action;
 
 class UserResource extends Resource
 {
@@ -131,6 +132,18 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
+                Action::make('viewAppointments')
+                    ->icon('heroicon-m-eye')
+                    ->label('Appuntamenti')
+                    ->action(fn (TyfonUser $record) => $record->load('cf'))
+                    ->modalContent(fn (TyfonUser $record) => view('admin.appointment-details', ['collection' => $record]))
+                    ->modalWidth('7xl'),
+                Action::make('viewContracts')
+                    ->icon('heroicon-m-eye')
+                    ->label('Contratti')
+                    ->action(fn (TyfonUser $record) => $record->load('cf'))
+                    ->modalContent(fn (TyfonUser $record) => view('admin.contract-details', ['collection' => $record]))
+                    ->modalWidth('7xl'),
                 Tables\Actions\EditAction::make()
                     ->icon('heroicon-m-magnifying-glass')
                     ->label('')
