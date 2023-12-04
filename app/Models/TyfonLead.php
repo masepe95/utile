@@ -17,8 +17,10 @@ class TyfonLead extends Model
     // L'ID primario della tabella, in questo caso "idLead"
     protected $primaryKey = 'idLead';
 
+    public $incrementing = true;
+
     protected $fillable = [
-        'idLead',
+        'tipo_utenza',
         'codiceMetanoNord',
         'commessa',
         'cognome',
@@ -35,7 +37,8 @@ class TyfonLead extends Model
         'provincia',
         'note',
         'codiceVenditore',
-        'tipologiaProdotto'
+        'tipologiaProdotto',
+        'tipo_intervento',
     ];
 
     public function appointments()
