@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\TyfonLead;
+use App\Models\TyfonUser;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
 
@@ -40,6 +41,7 @@ class TyfonLeadController extends Controller
             'tipologiaProdotto' => 'required|string|max:255',
             'tipo_intervento' => 'required|string|max:255',
             'tipo_utenza' => 'required|string|max:255',
+            'note' => 'nullable|string|max:255'
 
         ]);
 
@@ -54,15 +56,29 @@ class TyfonLeadController extends Controller
         // Gestisci la risposta
         if ($response->successful()) {
             TyfonLead::create($validatedData);
-            return response()->json(['success' => true, 'message' => 'Lead salvato e inviato con successo!']);
-        } else {
-            // Ottieni l'array della risposta JSON dell'API
-            $errorInfo = $response->json();
+            $leadId = $response->json()['idLead'] ?? null;
 
-            // Estrai il messaggio di errore
-            $errorMessage = $errorInfo['message'] ?? 'Errore sconosciuto nell\'invio dei dati';
+            if ($leadId) {
+                // Aggiungi l'id_lead ai dati validati
+                $userData = array_merge($validatedData, ['id_lead' => $leadId]);
 
-            return response()->json(['success' => false, 'message' => $errorMessage]);
+                // Crea un nuovo TyfonUser con i dati validati e l'id_lead
+                TyfonUser::create($userData);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Lead salvato con successo!',
+                    'leadId' => $leadId
+                ]);
+            } else {
+                // Ottieni l'array della risposta JSON dell'API
+                $errorInfo = $response->json();
+
+                // Estrai il messaggio di errore
+                $errorMessage = $errorInfo['message'] ?? 'Errore sconosciuto nell\'invio dei dati';
+
+                return response()->json(['success' => false, 'message' => $errorMessage]);
+            }
         }
     }
 }

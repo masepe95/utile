@@ -22,6 +22,15 @@ class TyfonUser extends Model
 
     public $timestamps = false;
 
+    public function setCfAttribute($value)
+    {
+        if (empty($value) && !empty($this->piva)) {
+            $this->attributes['cf'] = $this->piva;
+        } else {
+            $this->attributes['cf'] = $value;
+        }
+    }
+
     protected $fillable = [
         'cf',
         'id_lead',
@@ -36,7 +45,12 @@ class TyfonUser extends Model
         'cap',
         'comune',
         'provincia',
-        'note'
+        'note',
+        'tipo_utenza',
+        'tipo_intervento',
+        'tipologiaProdotto',
+        'codiceVenditore',
+        'codiceMetanoNord',
     ];
 
     public function appointments()
