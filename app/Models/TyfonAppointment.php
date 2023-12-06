@@ -16,6 +16,15 @@ class TyfonAppointment extends Model
     // La tabella associata al modello, in questo caso "tyfon_appointments"
     protected $table = 'tyfon_appointments';
 
+    public function setCfAttribute($value)
+    {
+        if (empty($value) && !empty($this->piva)) {
+            $this->attributes['cf'] = $this->piva;
+        } else {
+            $this->attributes['cf'] = $value;
+        }
+    }
+
     // Gli attributi che sono assegnabili in massa.
     protected $fillable = [
         'idAppuntamento',

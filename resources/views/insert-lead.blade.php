@@ -19,7 +19,7 @@
         }
 
         form {
-            background-color: #f4f4f4;
+
             padding: 20px;
             margin-top: 20px;
             display: grid;
@@ -190,7 +190,7 @@
             </div>
 
             <div class="form-group min-width">
-                <label for="civico">Numero Civico *</label>
+                <label for="civico">Civico *</label>
                 <input type="text" id="civico" name="civico" required>
             </div>
 
@@ -284,17 +284,41 @@
                 return decodeURIComponent(results[2].replace(/\+/g, ' '));
             }
 
-            // Elenco dei campi del form da precompilare
-            var fields = ['codiceMetanoNord', 'tipo_utenza', 'cognome', 'nome', 'cf', 'ragsoc', 'piva', 'telefono',
-                'email', 'indirizzo', 'civico', 'cap', 'comune', 'provincia', 'note', 'codiceVenditore',
-                'tipologiaProdotto', 'tipo_intervento'
-            ];
+            // Mappa i parametri della query string ai campi del form
+            var queryParamsToFormFields = {
+                'ta': {
+                    'fieldId': 'tipo_utenza',
+                    'mapping': {
+                        'residenziale': '1',
+                        'business': '2'
+                    }
+                },
+                'recapito': 'telefono',
+                'username': 'codiceMetanoNord',
+                'nome': 'nome',
+                'cognome': 'cognome',
+                'cf': 'cf',
+                'email': 'email',
+                'ragsoc': 'ragsoc',
+                'piva': 'piva',
 
-            // Ciclo sui campi per precompilarli
-            fields.forEach(function(field) {
-                var value = getParameterByName(field);
+                // Aggiungi qui altre mappature se necessario
+            };
+
+            // Ciclo sui parametri della query string per popolare i campi del form
+            Object.keys(queryParamsToFormFields).forEach(function(param) {
+                var value = getParameterByName(param);
                 if (value) {
-                    $('#' + field).val(value);
+                    var fieldInfo = queryParamsToFormFields[param];
+                    if (typeof fieldInfo === 'object') {
+                        // Mappatura con logica aggiuntiva
+                        var fieldId = fieldInfo.fieldId;
+                        var mappedValue = fieldInfo.mapping[value.toLowerCase()] || value;
+                        $('#' + fieldId).val(mappedValue);
+                    } else {
+                        // Mappatura diretta
+                        $('#' + fieldInfo).val(value);
+                    }
                 }
             });
         });

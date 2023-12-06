@@ -17,6 +17,15 @@ class TyfonContract extends Model
     // L'ID primario della tabella, in questo caso "idContratto"
     protected $primaryKey = 'idContratto';
 
+    public function setCfAttribute($value)
+    {
+        if (empty($value) && !empty($this->piva)) {
+            $this->attributes['cf'] = $this->piva;
+        } else {
+            $this->attributes['cf'] = $value;
+        }
+    }
+
     // Gli attributi che sono assegnabili in massa.
     protected $fillable = [
         'idAppuntamento',
